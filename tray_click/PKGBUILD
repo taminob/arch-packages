@@ -1,0 +1,39 @@
+pkgname=tray_click
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="A tool to add a tray icon which provides a drop-down menu with actions."
+arch=('x86_64')
+url="https://github.com/taminob/tray_click"
+license=('MIT')
+depends=('gcc-libs' 'libappindicator-gtk3')
+makedepends=('git' 'cargo')
+source=("$pkgname::git+https://github.com/taminob/$pkgname.git")
+sha512sums=('SKIP')
+
+build() {
+  cd "$pkgname"
+
+  cargo build --release --frozen --all-features
+}
+
+check() {
+  cd "$pkgname"
+
+  cargo test --release --frozen --all-features
+}
+
+package() {
+  cd "$pkgname"
+
+  install -Dm755 "target/release/$pkgname" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "resources/icon.png" "$pkgdir/usr/share/$pkgname/icon.png"
+
+#  install -Dm644 "complete/_$pkgname" "$pkgdir/usr/share/zsh/site-functions/_$pkgname"
+#  install -Dm644 "$OUT_DIR/$pkgname.bash" "$pkgdir/usr/share/bash-completion/completions/$pkgname"
+#  install -Dm644 "$OUT_DIR/$pkgname.fish" "$pkgdir/usr/share/fish/vendor_completions.d/$pkgname.fish"
+#  install -Dm644 "$OUT_DIR/$pkgname.1" "$pkgdir/usr/share/man/man1/$pkgname.1"
+
+  install -Dm644 "README.md" "$pkgdir/usr/share/doc/${pkgname}/README.md"
+#  install -Dm644 "COPYING" "$pkgdir/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm644 "LICENSE" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}
